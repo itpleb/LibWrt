@@ -70,6 +70,8 @@ You can use the following projects for cloud compilation:
 - [**laipeng668/openwrt-ci-roc**](https://github.com/laipeng668/openwrt-ci-roc)
 - [**VIKINGYFY/OpenWRT-CI**](https://github.com/VIKINGYFY/OpenWRT-CI)
 
+This repository also provides a **Build JDCloud RE-CS-02** GitHub Action. Run it manually from the **Actions** page to build RE-CS-02 firmware with OpenClash, the iStore app store, and Quickstart, then download the firmware from the run's **Artifacts**.
+
 ### Local Compilation
 
 > #### **⚠️ Important Notes**

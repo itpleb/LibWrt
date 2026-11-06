@@ -68,6 +68,8 @@
 - [**laipeng668/openwrt-ci-roc**](https://github.com/laipeng668/openwrt-ci-roc)
 - [**VIKINGYFY/OpenWRT-CI**](https://github.com/VIKINGYFY/OpenWRT-CI)
 
+本仓库也提供 **Build JDCloud RE-CS-02** GitHub Action。进入 **Actions** 页面手动运行该工作流，即可构建包含 OpenClash、iStore 商店和 Quickstart 的 RE-CS-02 固件；完成后从运行记录的 **Artifacts** 下载固件。
+
 ### 本地编译
 
 > #### **⚠️ 注意事项**
