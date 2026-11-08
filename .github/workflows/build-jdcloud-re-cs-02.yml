@@ -35,6 +35,8 @@ jobs:
           src-git nas_luci https://github.com/linkease/nas-packages-luci.git;main
           EOF
           ./scripts/feeds update -a
+          ./scripts/feeds install -d y luci
+          ./scripts/feeds install -d y -p luci luci-compat
           ./scripts/feeds install -d y -p openclash luci-app-openclash
           ./scripts/feeds install -d y -p istore luci-app-store
           ./scripts/feeds install -d y -p nas quickstart
@@ -42,18 +44,17 @@ jobs:
 
       - name: Configure JDCloud RE-CS-02
         run: |
-          cat > .config <<'EOF'
-          CONFIG_TARGET_qualcommax=y
-          CONFIG_TARGET_qualcommax_ipq60xx=y
-          CONFIG_TARGET_qualcommax_ipq60xx_DEVICE_jdcloud_re-cs-02=y
-          CONFIG_PACKAGE_luci=y
-          CONFIG_PACKAGE_luci-app-openclash=y
-          CONFIG_PACKAGE_luci-app-store=y
-          CONFIG_PACKAGE_luci-app-quickstart=y
-          CONFIG_PACKAGE_quickstart=y
-          CONFIG_PACKAGE_luci-compat=y
-          EOF
           make defconfig
+          ./scripts/config --enable TARGET_qualcommax
+          ./scripts/config --enable TARGET_qualcommax_ipq60xx
+          ./scripts/config --enable TARGET_qualcommax_ipq60xx_DEVICE_jdcloud_re-cs-02
+          ./scripts/config --enable PACKAGE_luci
+          ./scripts/config --enable PACKAGE_luci-app-openclash
+          ./scripts/config --enable PACKAGE_luci-app-store
+          ./scripts/config --enable PACKAGE_luci-app-quickstart
+          ./scripts/config --enable PACKAGE_quickstart
+          ./scripts/config --enable PACKAGE_luci-compat
+
           for option in \
             CONFIG_TARGET_qualcommax \
             CONFIG_TARGET_qualcommax_ipq60xx \
