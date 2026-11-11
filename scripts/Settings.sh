@@ -32,9 +32,9 @@ echo "CONFIG_PACKAGE_luci-app-$WRT_THEME=y" >> ./.config
 echo "CONFIG_PACKAGE_luci-app-$WRT_THEME-config=y" >> ./.config
 
 #引入私有扩展配置
-if [ -f "$GITHUB_WORKSPACE/Config/PRIVATE.txt" ]; then
+if [ -f "$GITHUB_WORKSPACE/config/PRIVATE.txt" ]; then
 	echo "Applying private configurations from PRIVATE.txt..."
-	cat $GITHUB_WORKSPACE/Config/PRIVATE.txt >> ./.config
+	cat $GITHUB_WORKSPACE/config/PRIVATE.txt >> ./.config
 fi
 
 #手动调整的插件

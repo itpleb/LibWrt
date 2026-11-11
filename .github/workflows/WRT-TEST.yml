@@ -35,7 +35,7 @@ on:
           - itpleb/LibWrt
           - immortalwrt/immortalwrt
       BRANCH:
-        default: 'owrt'
+        default: '25.12-nss'
         required: true
         type: string
       PACKAGE:

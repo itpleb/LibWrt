@@ -137,6 +137,6 @@ UPDATE_VERSION() {
 #UPDATE_VERSION "sing-box"
 
 #引入私有扩展脚本
-if [ -f "$GITHUB_WORKSPACE/Scripts/PRIVATE.sh" ]; then
-	source "$GITHUB_WORKSPACE/Scripts/PRIVATE.sh"
+if [ -f "$GITHUB_WORKSPACE/scripts/PRIVATE.sh" ]; then
+	source "$GITHUB_WORKSPACE/scripts/PRIVATE.sh"
 fi
