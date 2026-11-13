@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Codex LibWrt — 手抄本路由器界面</title>
+<style>
+/* ============================================================
+   CODEX / 手抄本 — Medieval Manuscript LuCI Theme
+   Aesthetic: 13th century illuminated manuscript
+   Parchment texture, gold leaf initials, rubrication, marginalia,
+   Gothic textualis / humanist minuscule, gold leaf, wormholes,
+   foxing stains, ruling lines, prick marks, catchwords.
+   ============================================================ */
+:root{
+  --ui-scale:1;
+  --parchment:#f5f0e1;       /* aged vellum */
+  --vellum:#fdf8e7;
+  --ink:#1a1612;             /* iron gall ink */
+  --ink-faded:#4a4438;
+  --ink-light:#6b6254;
+  --rubric:#c41e3a;          /* vermilion rubrication */
+  --rubric-faded:#8b3a2e;
+  --gold:#c9a84c;            /* gold leaf */
+  --gold-dim:#b8953a;
+  --gold-bright:#f0d87a;
+  --sepia:#8b7355;
+  --shadow:0 2px 8px rgba(20,16,12,.15);
+  --parchment-dark:#2d231a;  /* darkened vellum for night mode */
+  --vellum-dark:#1e1812;
+  --ink-dark:#e8e4d8;
+  --ink-faded-dark:#b8b0a0;
+  --ink-light-dark:#9a9484;
+  --gold-dark:#d4b85c;
+  --rubric-dark:#e8705a;
+
+  --font-gothic:'Gothic Textura','Cloister Black','Old English Text MT','Uncial Antiqua','Songti SC',serif;
+  --font-humanist:'Goudy Old Style','Palatino','Garamond','Palatino Linotype','Songti SC',serif;
+  --font-caroline:'Carolingian','Caroline Minuscule','Times New Roman',serif;
+  --font-uncial:'Uncial','Uncial Antiqua','Songti SC',serif;
+  --font-marginal:'Humanist Cursive','Italic','Georgia',serif;
+  --font-mono:'Courier New',monospace;
+
+  --fs-xs:.72rem; --fs-sm:.85rem; --fs-base:1rem; --fs-lg:1.15rem;
+  --fs-xl:1.3rem; --fs-2xl:1.8rem; --fs-3xl:2.8rem; --fs-mast:clamp(4rem,8vw,8rem);
+  --sp:calc(1rem * var(--ui-scale));
+  --page-w:calc(800px * var(--ui-scale));
+  --gutter:calc(24px * var(--ui-scale));
+  --margin-outer:calc(60px * var(--ui-scale));
+  --margin-inner:calc(40px * var(--ui-scale));
+  --margin-top:calc(80px * var(--ui-scale));
+  --margin-bottom:calc(100px * var(--ui-scale));
+
+  --parchment-bg:#f5f0e1;
+  --vellum-bg:#fdf8e7;
+  --ink:#1a1612;
+  --ink-faded:#4a4438;
+  --ink-light:#6b6254;
+  --rubric:#c41e3a;
+  --gold:#c9a84c;
+  --gold-dim:#b8953a;
+  --sepia:#8b7355;
+
+  --parchment-dark:#1a1410;
+  --vellum-dark:#1a1410;
+  --ink-dark:#f0ebe0;
+  --ink-faded-dark:#c9c0a8;
+  --ink-light-dark:#b8b0a0;
+  --gold-dark:#d4b85c;
+  --rubric-dark:#e8705a;
+
+  --font-gothic:'Cloister Black','Old English Text MT','Uncial Antiqua','Songti SC',serif;
+  --font-humanist:'Goudy Old Style','Palatino','Garamond','Palatino Linotype','Songti SC',serif;
+  --font-caroline:'Carolingian','Caroline Minuscule','Times New Roman',serif;
+  --font-uncial:'Uncial','Uncial Antiqua','Songti SC',serif;
+  --font-marginal:'Humanist Cursive','Italic','Georgia',serif;
+  --font-mono:'Courier New',monospace;
+
+  --fs-xs:.72rem; --fs-sm:.85rem; --fs-base:1rem; --fs-lg:1.15rem;
+  --fs-xl:1.3rem; --fs-2xl:1.8rem; --fs-3xl:2.8rem; --fs-mast:clamp(4rem,8vw,8rem);
+  --sp:calc(1rem * var(--ui-scale));
+  --page-w:calc(800px * var(--ui-scale));
+  --gutter:calc(24px * var(--ui-scale));
+  --margin-outer:calc(60px * var(--ui-scale));
+  --margin-inner:calc(40px * var(--ui-scale));
+  --margin-top:calc(80px * var(--ui-scale));
+  --margin-bottom:calc(100px * var(--ui-scale));
+}
+
+[data-theme="dark"]{
+  --parchment:#1a1410;
+  --vellum:#1a1410;
+  --ink:#f0ebe0;
+  --ink-faded:#c9c0a8;
+  --ink-light:#b8b0a0;
+  --rubric:#e8705a;
+  --rubric-faded:#a0523a;
+  --gold:#d4b85c;
+  --gold-dim:#b8953a;
+  --gold-bright:#f0d87a;
+  --sepia:#8b7355;
+  --shadow:0 2px 8px rgba(0,0,0,.7);
+  --parchment-bg:#1a1410;
+  --vellum-bg:#1a1410;
+  --ink-dark:#f0ebe0;
+  --ink-faded-dark:#c9c0a8;
+  --ink-light-dark:#b8b0a0;
+  --gold-dark:#d4b85c;
+  --rubric-dark:#e8705a;
+  color-scheme:dark;
+}
+[data-theme="light"]{color-scheme:light;}
+
+*{box-sizing:border-box}
+html{font-size:calc(16px * var(--ui-scale));-webkit-font-smoothing:antialiased}
+[hidden]{display:none!important}
+body{margin:0;background:var(--parchment);color:var(--ink);font-family:var(--font-humanist);font-size:var(--fs-base);line-height:1.7;min-height:100vh}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--rubric);color:#fff}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+/* 羊皮纸纹理 */
+body::before{
+  content:"";position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.15;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.08'/%3E%3C/svg%3E");
+}
+
+/* 虫洞与狐狸斑 */
+body::after{
+  content:"";position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:.04;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.015' numOctaves='4'/%3E%3C/filter%3E%3Ccircle cx='120' cy='80' r='8' filter='url(%23w)' fill='%238b7355' opacity='.3'/%3E%3Ccircle cx='320' cy='280' r='5' filter='url(%23w)' fill='%23c41e3a' opacity='.4'/%3E%3Ccircle cx='50' cy='320' r='3' filter='url(%23w)' fill='%23c9a84c' opacity='.3'/%3E%3C/svg%3E");
+}
+
+/* 页边划线 */
+html::before{
+  content:"";position:fixed;left:calc(var(--margin-inner) - 20px);top:calc(var(--margin-top) - 20px);bottom:calc(var(--margin-bottom) - 20px);width:1px;z-index:9997;background:repeating-linear-gradient(180deg,transparent,transparent 8px,var(--sepia) 8px,var(--sepia) 9px);opacity:.4;pointer-events:none;
+}
+html::after{
+  content:"";position:fixed;right:calc(var(--margin-outer) - 20px);top:calc(var(--margin-top) - 20px);bottom:calc(var(--margin-bottom) - 20px);width:1px;z-index:9997;background:repeating-linear-gradient(180deg,transparent,transparent 8px,var(--sepia) 8px,var(--sepia) 9px);opacity:.4;pointer-events:none;
+}
+
+/* 划线 */
+.manuscript{position:relative;max-width:calc(var(--page-w) + var(--gutter) + var(--margin-inner) + var(--margin-outer));margin:0 auto;padding:calc(var(--margin-top)) calc(var(--margin-outer)) calc(var(--margin-bottom));min-height:100vh;background:var(--vellum);box-shadow:var(--shadow);position:relative}
+.manuscript::before{content:"";position:absolute;left:calc(var(--margin-inner));right:calc(var(--margin-outer));top:calc(var(--margin-top));bottom:calc(var(--margin-bottom));background:repeating-linear-gradient(180deg,transparent,transparent 22px,var(--sepia) 22px,var(--sepia) 23px);opacity:.15;pointer-events:none;z-index:-1}
+
+/* 针孔 */
+.manuscript::after{content:"";position:absolute;top:calc(var(--margin-top) - 10px);left:calc(var(--margin-inner) - 8px);width:4px;height:4px;background:var(--sepia);border-radius:50%;opacity:.6;box-shadow:calc(var(--page-w) + var(--gutter) + 8px) 0 0 0 var(--sepia),calc(var(--page-w) + var(--gutter) + 8px) calc(100vh - var(--margin-bottom) - 20px) 0 0 var(--sepia),-8px -10px 0 0 var(--sepia),calc(var(--page-w) + var(--gutter) + 8px) -10px 0 0 var(--sepia);}
+
+/* 页眉/页脚 */
+.page-header{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:var(--sp);border-bottom:1px solid var(--sepia);margin-bottom:calc(var(--sp)*2);font-family:var(--font-marginal);font-size:var(--fs-sm);color:var(--ink-faded)}
+.page-footer{display:flex;justify-content:space-between;align-items:center;padding-top:var(--sp);border-top:1px solid var(--sepia);margin-top:calc(var(--sp)*2);font-family:var(--font-marginal);font-size:var(--fs-xs);color:var(--ink-light)}
+
+/* ==================== 脊线/侧边栏 ==================== */
+.codex{display:grid;grid-template-columns:calc(56px * var(--ui-scale)) var(--rail) 1fr;min-height:100vh}
+
+/* 脊线 */
+.spine{position:relative;border-right:1px solid var(--sepia);background:var(--vellum);display:flex;flex-direction:column;align-items:center;padding:calc(var(--sp)*2) 0;gap:calc(var(--sp)*1.5);min-height:100vh}
+.spine .seal{width:calc(28px * var(--ui-scale));height:calc(28px * var(--ui-scale));border:2px solid var(--rubric);color:var(--rubric);display:grid;place-items:center;font-family:var(--font-uncial);font-size:var(--fs-lg);border-radius:2px;background:linear-gradient(135deg,var(--gold-dim),var(--gold-bright));box-shadow:0 0 12px var(--gold)}
+.spine .vlabel{writing-mode:vertical-rl;font-family:var(--font-marginal);font-size:var(--fs-xs);letter-spacing:.3em;color:var(--ink-light);text-transform:uppercase}
+.spine .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);margin-top:auto;box-shadow:0 0 8px var(--gold)}
+
+/* 目录栏 */
+.rail{border-right:1px solid var(--sepia);padding:calc(var(--sp)*2) calc(var(--sp)*1.5);position:relative;background:var(--vellum)}
+.rail .kicker{font-family:var(--font-marginal);font-size:var(--fs-xs);letter-spacing:.25em;color:var(--rubric);text-transform:uppercase;margin-bottom:var(--sp)}
+.rail h2{font-family:var(--font-humanist);font-weight:400;font-size:var(--fs-xl);line-height:1.15;margin:0 0 calc(var(--sp)*.5);letter-spacing:-.01em}
+.rail .sub{font-family:var(--font-marginal);font-size:var(--fs-xs);color:var(--ink-light)}
+.index{list-style:none;margin:calc(var(--sp)*1.5) 0 0;padding:0}
+.index li{border-bottom:1px solid var(--rule);padding:calc(var(--sp)*.6) 0;display:flex;align-items:baseline;gap:calc(var(--sp)*1);cursor:pointer;transition:padding-left .2s ease}
+.index li:hover{padding-left:calc(var(--sp)*.6)}
+.index li.on{color:var(--rubric)}
+.index .num{font-family:var(--font-mono);font-size:var(--fs-xs);color:var(--ink-light);min-width:2.2em}
+.index .nm{font-family:var(--font-humanist);font-size:var(--fs-sm)}
+.index .pg{margin-left:auto;font-family:var(--font-mono);font-size:var(--fs-xs);color:var(--ink-light)}
+.rail .foot{position:absolute;bottom:calc(var(--sp)*2);left:calc(var(--sp)*1.5);right:calc(var(--sp)*1.5);font-family:var(--font-marginal);font-size:var(--fs-xs);color:var(--ink-light);line-height:1.7}
+
+/* ==================== 正文区域 ==================== */
+.content{padding:calc(var(--sp)*2) calc(var(--sp)*3);max-width:calc(760px * var(--ui-scale));width:100%}
+
+/* ==================== 页眉 ==================== */
+.page-header{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:var(--sp);border-bottom:1px solid var(--sepia);margin-bottom:calc(var(--sp)*2);font-family:var(--font-marginal);font-size:var(--fs-sm);color:var(--ink-faded)}
+
+/* 标题区 */
+.masthead{padding:calc(var(--sp)*3) 0 calc(var(--sp)*2);border-bottom:2px double var(--ink);position:relative;margin-bottom:calc(var(--sp)*2)}
+.masthead .incipit{font-family:var(--font-uncial);font-size:var(--fs-xl);letter-spacing:.15em;color:var(--rubric);text-transform:uppercase;display:block;margin-bottom:calc(var(--sp)*1.2)}
+.masthead h1{font-family:var(--font-gothic);font-weight:400;font-size:var(--fs-mast);line-height:.95;letter-spacing:-.02em;margin:0}
+.masthead .rubric{font-family:var(--font-uncial);font-size:var(--fs-xl);color:var(--rubric);margin-top:var(--sp);display:block}
+.masthead .explicit{display:flex;justify-content:space-between;align-items:flex-end;gap:var(--sp);margin-top:calc(var(--sp)*2);flex-wrap:wrap}
+.masthead .deck{margin:0;max-width:44ch;font-size:var(--fs-lg);color:var(--ink-2);font-style:italic}
+.masthead .deck .colophon{font-family:var(--font-marginal);font-size:var(--fs-xs);color:var(--ink-light);letter-spacing:.1em;text-align:right;line-height:1.8}
+
+/* 正文栏 */
+.text-block{line-height:1.85}
+.text-block p{margin:0 0 var(--sp);text-indent:2.5em}
+.text-block p:first-of-type::first-letter{
+  float:left;font-family:var(--font-gothic);font-size:calc(var(--fs-mast)*1.2);line-height:.75;padding:.08em .18em 0 0;color:var(--gold);font-weight:400;margin-right:.1em;text-shadow:0 0 8px var(--gold);
+}
+.text-block .rubric{font-family:var(--font-uncial);font-size:var(--fs-xl);color:var(--rubric);margin:var(--sp) 0;text-align:center}
+.text-block .explicit{text-align:center;font-family:var(--font-marginal);font-size:var(--fs-xs);color:var(--ink-light);margin-top:calc(var(--sp)*2);text-transform:uppercase;letter-spacing:.2em}
+
+/* 旁注 */
+.marginalia{position:absolute;right:calc(-220px * var(--ui-scale));width:calc(180px * var(--ui-scale));font-family:var(--font-marginal);font-size:var(--fs-xs);color:var(--ink-light);font-style:italic;line-height:1.5;opacity:.8;pointer-events:none}
+.marginalia::before{content:"☞ ";color:var(--rubric)}
+
+/* 页边注 */
+.marginal-note{position:absolute;left:calc(-220px * var(--ui-scale));width:calc(160px * var(--ui-scale));font-family:var(--font-marginal);font-size:var(--fs-xs);color:var(--ink-light);font-style:italic;text-align:right;opacity:.6;pointer-events:none}
+.marginal-note::after{content:" ✎";color:var(--rubric)}
+
+/* 栏目块 */
+.section{margin-top:calc(var(--sp)*3)}
+.section .rubricated{font-family:var(--font-uncial);font-size:var(--fs-xl);color:var(--rubric);margin:0 0 var(--sp);text-align:center}
+.section .incipit{font-family:var(--font-humanist);font-weight:400;font-size:var(--fs-xl);color:var(--ink)}
+.section .incipit::first-letter{float:left;font-family:var(--font-uncial);font-size:calc(var(--fs-mast)*.8);line-height:.7;padding:.06em .12em 0 0;color:var(--gold);margin-right:.1em}
+
+/* 统计栏 */
+.stat{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp);margin-top:calc(var(--sp)*2);padding:var(--sp);background:var(--vellum);border:1px solid var(--sepia);border-radius:var(--r-md)}
+.stat .cell{text-align:center}
+.stat .num{font-family:var(--font-gothic);font-size:var(--fs-3xl);line-height:1;color:var(--rubric)}
+.stat .lbl{font-family:var(--font-marginal);font-size:var(--fs-xs);color:var(--ink-light);text-transform:uppercase;letter-spacing:.1em;margin-top:4px}
+
+/* 表单行 */
+.rows{border-top:1px solid var(--sepia);margin-top:calc(var(--sp)*2)}
+.row{display:grid;grid-template-columns:calc(220px * var(--ui-scale)) 1fr auto;gap:var(--sp);align-items:center;padding:calc(var(--sp)) 0;border-bottom:1px solid var(--rule)}
+.row .lbl{font-family:var(--font-marginal);font-size:var(--fs-sm);color:var(--ink-2);font-weight:500}
+.row .lbl b{display:block;font-family:var(--font-mono);font-size:var(--fs-xs);font-weight:400;color:var(--ink-light);letter-spacing:.1em;margin-bottom:3px}
+.row input,.row select{font-family:var(--font-humanist);font-size:var(--fs-sm);color:var(--ink);background:transparent;border:none;border-bottom:1px dashed var(--sepia);padding:8px 2px;width:100%;max-width:38ch}
+.row input:focus,.row select:focus{outline:none;border-bottom:1px solid var(--rubric)}
+.row .val{font-family:var(--font-humanist);font-size:var(--fs-lg);color:var(--rubric);font-weight:600}
+.row .act{font-family:var(--font-marginal);font-size:var(--fs-xs);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-light);border:1px solid var(--sepia);padding:6px 12px;background:transparent;cursor:pointer;transition:all .2s ease}
+.row .act:hover{border-color:var(--rubric);color:var(--rubric)}
+
+/* 按钮 */
+.actions{display:flex;gap:var(--sp);justify-content:flex-end;margin-top:calc(var(--sp)*2);padding-top:var(--sp);border-top:2px double var(--ink)}
+.btn{font-family:var(--font-marginal);font-size:var(--fs-sm);letter-spacing:.08em;text-transform:uppercase;padding:calc(var(--sp)) calc(var(--sp)*2);border:1px solid var(--sepia);background:transparent;color:var(--ink);cursor:pointer;transition:all .2s ease}
+.btn:hover{background:var(--ink);color:var(--vellum)}
+.btn.primary{background:var(--rubric);border-color:var(--rubric);color:#fff}
+.btn.primary:hover{background:var(--ink);border-color:var(--ink)}
+
+/* 旁注样式 */
+.marginalia-block{margin:var(--sp) 0;padding-left:calc(var(--sp)*3);border-left:2px solid var(--rubric);font-family:var(--font-marginal);font-size:var(--fs-sm);color:var(--ink-light);font-style:italic;line-height:1.6}
+
+/* 页脚 */
+.page-footer{display:flex;justify-content:space-between;align-items:center;padding-top:var(--sp);border-top:1px solid var(--sepia);margin-top:calc(var(--sp)*2);font-family:var(--font-marginal);font-size:var(--fs-xs);color:var(--ink-light)}
+.colophon{display:flex;justify-content:space-between;align-items:center;padding-top:var(--sp);border-top:1px solid var(--sepia);font-family:var(--font-mono);font-size:var(--fs-xs);letter-spacing:.1em;color:var(--ink-light);text-transform:uppercase}
+
+/* 按钮 */
+.btn{font-family:var(--font-marginal);font-size:var(--fs-sm);letter-spacing:.08em;text-transform:uppercase;padding:var(--sp) calc(var(--sp)*2);border:1px solid var(--sepia);background:transparent;color:var(--ink);cursor:pointer;transition:all .2s ease}
+.btn:hover{background:var(--ink);color:var(--vellum)}
+.btn.primary{background:var(--rubric);border-color:var(--rubric);color:#fff}
+.btn.primary:hover{background:var(--ink);border-color:var(--ink)}
+
+/* 缩放芯片 */
+.scalechip{position:fixed;right:calc(var(--sp)*1.4);bottom:calc(var(--sp)*1.4);font-family:var(--font-mono);font-size:var(--fs-xs);letter-spacing:.1em;color:var(--ink-light);background:var(--vellum);border:1px solid var(--sepia);padding:6px 10px;z-index:50}
+
+/* 交错显现 */
+.rv{opacity:0;transform:translateY(18px);animation:rise .8s cubic-bezier(.2,.7,.2,1) forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.rv{animation:none;opacity:1;transform:none}}
+
+/* 响应式 */
+@media(max-width:1080px){.codex{grid-template-columns:calc(56px * var(--ui-scale)) 1fr}.rail{display:none}.content{padding:calc(var(--sp)*2)}}
+@media(max-width:640px){.codex{grid-template-columns:1fr}.spine{display:none}.content{padding:var(--sp)}.manuscript::before,.manuscript::after{display:none}html::before,html::after{display:none}}
+@media print{.spine,.rail,.tools,.scalechip{display:none!important}.codex{display:block}.manuscript{box-shadow:none}body::before,body::after,html::before,html::after,html::after{display:none}}
+
+@keyframes quill{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+.quill{display:inline-block;animation:quill 3s ease-in-out infinite;transform-origin:bottom center}
+
+/* ==================== 响应式缩放 ==================== */
+@media(max-width:640px){
+  .layout{grid-template-columns:1fr}
+  .spine{display:none}
+  .rail{display:none}
+  .content{padding:var(--sp)}
+  .manuscript::before,.manuscript::after{display:none}
+  html::before,html::after{display:none}
+}
+</style>
+</head>
+<body data-theme="light">
+<div class="codex">
+  <!-- 脊线 -->
+  <aside class="spine" aria-label="脊线">
+    <div class="seal" title="Codex LibWrt">☧</div>
+    <div class="vlabel">C O D E X &nbsp; L I B W R T</div>
+    <div class="vlabel" style="opacity:.6">A.D. MMXXVI</div>
+    <div class="dot"></div>
+  </aside>
+
+  <!-- 目录栏 -->
+  <nav class="rail" aria-label="目录">
+    <div class="kicker">CONTENTS / 目录</div>
+    <h2>系统<br>状况</h2>
+    <div class="sub">A manuscript of the router</div>
+    <hr style="border:none;border-top:1px solid var(--sepia);margin:calc(var(--sp)*1.2) 0">
+    <ul class="index" id="index">
+      <li class="on" data-t="overview"><span class="num">Ⅰ</span><span class="nm">概览</span><span class="pg">f. 1</span></li>
+      <li data-t="network"><span class="num">Ⅱ</span><span class="nm">网络</span><span class="pg">f. 2</span></li>
+      <li data-t="wireless"><span class="num">Ⅲ</span><span class="nm">无线</span><span class="pg">f. 3</span></li>
+      <li data-t="firewall"><span class="num">Ⅳ</span><span class="nm">防火墙</span><span class="pg">f. 4</span></li>
+      <li data-t="system"><span class="num">Ⅴ</span><span class="nm">系统</span><span class="pg">f. 5</span></li>
+      <li data-t="services"><span class="num">Ⅵ</span><span class="nm">服务</span><span class="pg">f. 6</span></li>
+      <li data-t="log"><span class="num">Ⅶ</span><span class="nm">日志</span><span class="pg">f. 7</span></li>
+    </ul>
+    <div class="foot">
+      CODEX LIBWRT<br>
+      FOLIO MMXXVI<br>
+      QUALCOMAX / IPQ60XX<br>
+      JDCloud RE-CS-02
+    </div>
+  </nav>
+
+  <!-- 正文区 -->
+  <main class="content">
+    <!-- 页眉 -->
+    <header class="page-header rv" style="animation-delay:.05s">
+      <span>C O D E X &nbsp; L I B W R T &nbsp;·&nbsp; F O L I O &nbsp; M M X X V I</span>
+      <span class="tools">
+        <button class="tbtn" id="btnLight" title="Light">☀</button>
+        <button class="tbtn" id="btnDark" title="Dark">☾</button>
+        <button class="tbtn" id="btnScale" title="Scale">⛶</button>
+      </span>
+    </header>
+
+    <!-- 标题区 -->
+    <header class="masthead rv" style="animation-delay:.12s">
+      <span class="incipit">Incipit</span>
+      <h1 id="mast">Codex<br><em>LibWrt</em></h1>
+      <div class="rubric">Incipit liber systematis de router</div>
+      <div class="explicit">
+        <p class="deck">A manuscript describing the estate of the router: its interfaces, its burdens, its silent servants.</p>
+        <div class="colophon">FOLIO MMXXVI · LibWrt · qualcommax/ipq60xx</div>
+      </div>
+    </header>
+
+    <!-- 正文 -->
+    <article class="text-block rv" style="animation-delay:.2s">
+      <p>The router has labored three days without ceasing. Six interfaces are bound within this codex: two bear the traffic of the household, four wait in silence for packets that may never arrive. The traffic flows through br-lan as ink flows through a quill—steady, patient, without haste.</p>
+      <p class="rubric">Interfaces</p>
+      <p>Two interfaces bear the greater burden: eth0 faces the world beyond the walls, br-lan shelters the household within. Four wireless interfaces—two at 2.4GHz, two at 5GHz—wait like scribes awaiting dictation. Their traffic is recorded in the folios that follow.</p>
+      <p>Rather than illuminate the dashboard with glowing gauges and shouting gauges, we chose to transcribe it—as a scribe would: with a masthead, a folio, and hairline rules. The data is the text; the design merely binds it.</p>
+      <p class="rubric">The Machine at Rest</p>
+      <p>Three days without ceasing. CPU 23%, Memory 61%, fourteen devices connected. The machine rests, yet it is never idle. Every packet is a stroke of the quill; every log entry, a marginal note.</p>
+      <p class="explicit">Explicit liber systematis. Deo gratias.</p>
+      <div class="byline">Scriptum per libwrt-healthcheck · Scriptum in Textura & Carolingian</div>
+    </article>
+
+    <section class="rubricated-section rv" style="animation-delay:.28s">
+      <div class="rubricated">Tabula Systematis / System Table</div>
+      <div class="rows" id="rows">
+        <div class="row"><div class="lbl"><b>Hostname</b>主机名</div><input value="LibWrt"><div class="act">Emend</div></div>
+        <div class="row"><div class="lbl"><b>Timezone</b>时区</div><select><option>Asia/Shanghai (CST +0800)</option><option>UTC</option></select><div class="act">Emend</div></div>
+        <div class="row"><div class="lbl"><b>WAN IPv4</b>广域网地址</div><span class="val">192.168.1.100</span><div class="act">Inspect</div></div>
+        <div class="row"><div class="lbl"><b>LAN IPv4</b>局域网地址</div><span class="val">192.168.2.1</span><div class="act">Inspect</div></div>
+        <div class="row"><div class="lbl"><b>Uptime</b>运行时间</div><span class="val">3d 07h</span><div class="act">Chronicle</div></div>
+      </div>
+
+      <div class="marginalia-block">
+        <p>⚠ Note: Root password unset. The abbot warns: set a password lest the monastery be plundered.</p>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="btnReset">Cancel</button>
+        <button class="btn" id="btnSave">Save</button>
+        <button class="btn primary" id="btnApply">Save & Apply</button>
+    </section>
+
+    <footer class="colophon">
+      <span>Codex LibWrt &nbsp;·&nbsp; A Manuscript LuCI Theme</span>
+      <span id="clock">--:--:--</span>
+      <span>Scriptum in Textura · Carolingian · Humanist · Songti</span>
+    </footer>
+  </main>
+</div>
+
+<div class="scalechip" id="scaleChip">SCALE 1.00×</div>
+
+<script>
+(function(){
+  var d=document.documentElement, state=JSON.parse(localStorage.getItem('codex-prefs')||'{}');
+  var pref=state.theme||'light', scaleMode=state.scale||'auto';
+  function eff(p){return p==='auto'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):p;}
+  function autoScale(){var w=Math.max(innerWidth||1600,960);if(w<=1600)return 1;var t=Math.min((w-1600)/2240,1),v=1+t*.8;if(w>3840)v+=Math.min((w-3840)/3840,1)*.2;return Math.min(Math.round(Math.min(v,2)*100)/100,2);}
+  function scale(){return scaleMode==='auto'?autoScale():Math.max(.9,Math.min(2.2,Number(scaleMode)||1));}
+  function apply(){d.setAttribute('data-theme',eff(pref));d.style.setProperty('--ui-scale',String(scale()));
+    document.getElementById('scaleChip').textContent='SCALE '+scale().toFixed(2)+'×';
+    document.getElementById('btnLight').classList.toggle('on',pref==='light');
+    document.getElementById('btnDark').classList.toggle('on',pref==='dark');}
+  function save(){localStorage.setItem('codex-prefs',JSON.stringify({theme:pref,scale:scaleMode}));}
+  apply();save();
+  document.getElementById('btnLight').onclick=function(){pref='light';save();apply();};
+  document.getElementById('btnDark').onclick=function(){pref='dark';save();apply();};
+  var cyc=['auto','1','1.15','1.3','1.5','1.75','2'];
+  document.getElementById('btnScale').onclick=function(){scaleMode=cyc[(cyc.indexOf(scaleMode)+1)%cyc.length];save();apply();this.textContent='Scale: '+(scaleMode==='auto'?'Auto':Math.round(Number(scaleMode)*100)+'%');};
+  document.getElementById('btnScale').textContent='Scale: '+(scaleMode==='auto'?'Auto':Math.round(Number(scaleMode)*100)+'%');
+  addEventListener('resize',function(){apply();});
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){if(pref==='auto')apply();});
+  function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('zh-CN',{hour12:false});}
+  tick();setInterval(tick,1000);
+
+  // 目录交互
+  var issues={
+    overview:['Incipit','Codex<br><em>LibWrt</em>','A manuscript describing the estate of the router.','Tabula Systematis'],
+    network:['Capitulum II','Six<br><em>Interfaces</em>','Two bear the burden; four wait in silence.','Tabula Interfaciarum'],
+    wireless:['Capitulum III','The<br><em>Airwaves</em>','2.4G and 5G, like morning and evening editions of the same codex.','Tabula Wireless'],
+    firewall:['Capitulum IV','A Measured<br><em>Boundary</em>','Rules are few but each has its reason.','Tabula Regulorum'],
+    system:['Capitulum V','The<br><em>Colophon</em>','Hostname, timezone, version—the copyright page of the machine.','Tabula Systematis'],
+    services:['Capitulum VI','Quiet<br><em>Daemons</em>','Services run in silence, speaking only when called.','Tabula Servitiorum'],
+    log:['Capitulum VII','Marginal<br><em>Notes</em>','The log is the marginal gloss of the system.','Tabula Chronicarum']
+  };
+  document.querySelectorAll('#index li').forEach(function(li){
+    li.addEventListener('click',function(){
+      document.querySelectorAll('#index li').forEach(function(x){x.classList.remove('on');});
+      li.classList.add('on');
+      var v=issues[li.dataset.t];
+      document.getElementById('lead').textContent=v[0];
+      document.getElementById('mast').innerHTML=v[1];
+      document.getElementById('deck').textContent=v[2];
+      document.getElementById('bulletinTitle').textContent=v[3];
+    });
+  });
+
+  // toast
+  function note(msg){var el=document.createElement('div');el.textContent=msg;el.style.cssText='position:fixed;left:50%;bottom:28px;transform:translateX(-50%);font-family:var(--font-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;background:var(--ink);color:var(--vellum);padding:10px 18px;z-index:200;opacity:0;transition:opacity .2s';document.body.appendChild(el);requestAnimationFrame(function(){el.style.opacity=1;});setTimeout(function(){el.style.opacity=0;setTimeout(function(){el.remove();},250);},1600);}
+  document.getElementById('btnApply').onclick=function(){note('Saved & Applied / Scriptum et Applicatum');};
+  document.getElementById('btnSave').onclick=function(){note('Saved / Scriptum');};
+  document.getElementById('btnReset').onclick=function(){note('Reset / Restitutum');};
+
+  // clock
+  function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('zh-CN',{hour12:false});}
+  tick();setInterval(tick,1000);
+})();
+</script>
+</div>
+</body>
+</html>
