@@ -27,10 +27,11 @@
 <%
 	local ver = require "luci.version"
 	local disp = require "luci.dispatcher"
-	local request  = disp.context.path
+	local dmenu = require "luci.themes.design.menu"
+	local request  = disp.context.path or {}
 	local category = request[1]
-	local tree = disp.node()
-	local categories = disp.node_childs(tree)
+	local tree = dmenu.tree()
+	local categories = dmenu.childs(tree)
 %>
                 </div>
                 <footer class="footer" style="text-align:center">
@@ -41,7 +42,7 @@
                     <% if #categories > 1 then %>
                     <ul class="breadcrumb pull-right" id="modemenu">
                         <% for i, r in ipairs(categories) do %>
-                        <li<% if category == r then %> class="active"<%end%>><a href="<%=controller%>/<%=r%>/"><%=striptags(translate(tree.nodes[r].title))%></a> <span class="divider">|</span></li>
+                        <li<% if category == r then %> class="active"<%end%>><a href="<%=controller%>/<%=r%>/"><%=striptags(translate(dmenu.title(tree.nodes[r]) or r))%></a> <span class="divider">|</span></li>
                         <% end %>
                     </ul>
                     <% end %>

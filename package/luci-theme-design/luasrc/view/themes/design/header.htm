@@ -30,6 +30,7 @@
 	local util = require "luci.util"
 	local http = require "luci.http"
 	local disp = require "luci.dispatcher"
+	local dmenu = require "luci.themes.design.menu"
 	local uci = require 'luci.model.uci'.cursor()
 	local fs  = require "nixio.fs"
 
@@ -37,18 +38,18 @@
 	local boardinfo={}
 	boardinfo.hostname=sys.hostname()
 	
-	local request  = disp.context.path
-	local request2 = disp.context.request
+	local request  = disp.context.path or {}
+	local request2 = disp.context.request or {}
 
 	local category = request[1]
-	local cattree  = category and disp.node(category)
+	local cattree  = category and dmenu.node(category)
 
 	local leaf = request2[#request2]
 
-	local tree = disp.node()
-	local node = disp.context.dispatched
+	local tree = dmenu.tree()
+	local node = dmenu.node(unpack(request))
 
-	local categories = disp.node_childs(tree)
+	local categories = dmenu.childs(tree)
 
 	local c = tree
 	local i, r
@@ -77,7 +78,7 @@
 			level = 1
 		end
 
-		local childs = disp.node_childs(node)
+		local childs = dmenu.childs(node)
 		if #childs > 0 then
 
             if level > 2 then
@@ -99,7 +100,7 @@
                 if level > 2 then
 		%>
 			<li class="tabmenu-item-<%=v%><%- if nnode._menu_selected or (node.leaf and v == leaf) then %> active<% end %>">
-			    <a href="<%=nodeurl(prefix, v, nnode.query)%>"><%=striptags(translate(nnode.title))%></a>
+				    <a href="<%=nodeurl(prefix, v, nnode.query)%>"><%=striptags(translate(dmenu.title(nnode) or v))%></a>
 			</li>
 		<%      end
 			end
@@ -258,7 +259,7 @@
 		 <ul class="nav">
 			 <%-
 			 local function submenu(prefix, node)
-			 local childs = disp.node_childs(node)
+			 local childs = dmenu.childs(node)
 			 if #childs > 0 then
 			 %>
 			 <ul class="slide-menu">
@@ -268,7 +269,7 @@
 				 local href  = controller .. "" .. prefix .. r ..
 				 (nnode.query and http.build_querystring(nnode.query) or "")
 				 %>
-				 <li><a data-title="<%=pcdata(striptags(nnode.title))%>" href="<%=pcdata(href)%>"><%=pcdata(striptags(translate(nnode.title)))%></a></li>
+				 <li><a data-title="<%=pcdata(striptags(dmenu.title(nnode) or r))%>" href="<%=pcdata(href)%>"><%=pcdata(striptags(translate(dmenu.title(nnode) or r)))%></a></li>
 				 <%-
 				 end
 				 %>
@@ -277,24 +278,24 @@
 			 end
 			 end
 
-			 childs = disp.node_childs(cattree)
+			 childs = dmenu.childs(cattree)
 
 			 if #childs > 0 then
 			 for i, r in ipairs(childs) do
 			 local nnode = cattree.nodes[r]
 			 local href  = controller .. "/" .. category .. "/" .. r ..
 			 (nnode.query and http.build_querystring(k.query) or "")
-			 local grandchildren = disp.node_childs(nnode)
+			 local grandchildren = dmenu.childs(nnode)
 
 			 if #grandchildren > 0 then
 			 %>
 			 <li class="slide">
-				 <a class="menu" data-title="<%=pcdata(striptags(nnode.title))%>" href="#"><%=pcdata(striptags(translate(nnode.title)))%></a>
+				 <a class="menu" data-title="<%=pcdata(striptags(dmenu.title(nnode) or r))%>" href="#"><%=pcdata(striptags(translate(dmenu.title(nnode) or r)))%></a>
 				 <%- submenu("" .. category .. "/" .. r .. "/", nnode) %>
 			 </li>
 			 <%          else %>
 			 <li class="slide">
-				 <a class="menu2" data-title="<%=pcdata(striptags(nnode.title))%>" href="<%=pcdata(href)%>"><%=pcdata(striptags(translate(nnode.title)))%></a>
+				 <a class="menu2" data-title="<%=pcdata(striptags(dmenu.title(nnode) or r))%>" href="<%=pcdata(href)%>"><%=pcdata(striptags(translate(dmenu.title(nnode) or r)))%></a>
 			 </li>
 			 <%
 			 end
