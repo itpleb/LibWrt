@@ -1,0 +1,20 @@
+--- a/src/third_party/fmt/fmt/format.cc
++++ b/src/third_party/fmt/fmt/format.cc
+@@ -17,8 +17,7 @@ template FMT_API auto dragonbox::to_decimal(double x) noexcept
+
+ #if FMT_USE_LOCALE
+ // DEPRECATED! locale_ref in the detail namespace
+-template FMT_API locale_ref::locale_ref(const std::locale& loc);
+-template FMT_API auto locale_ref::get<std::locale>() const -> std::locale;
++// Explicit instantiations disabled for compatibility with newer clang.
+ #endif
+
+ // Explicit instantiations for char.
+@@ -32,6 +31,5 @@ template FMT_API void buffer<char>::append(const char*, const char*);
+
+ // DEPRECATED!
+-template FMT_API void vformat_to(buffer<char>&, string_view,
+-                                 typename vformat_args<>::type, locale_ref);
++// vformat_to explicit instantiation disabled for compatibility with newer clang.
+
+ // Explicit instantiations for wchar_t.
